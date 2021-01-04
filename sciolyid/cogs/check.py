@@ -18,7 +18,7 @@ import string
 
 from discord.ext import commands
 
-from sciolyid.data import database, get_aliases, get_wiki_url, logger
+from sciolyid.data import database, get_aliases, get_wiki_url, logger, master_id_list
 from sciolyid.functions import (
     CustomCooldown,
     incorrect_increment,
@@ -63,7 +63,9 @@ class Check(commands.Cog):
                     correct = arg in correct_list
                 else:
                     logger.info("spelling leniency")
-                    correct = spellcheck_list(arg, correct_list)
+                    correct = spellcheck_list(arg, correct_list, master_id_list)
+                    # FIXME "I don't think this current implementation works since the item
+                    # specific aliases aren't in id_list or master_id_list." -tctree333
             else:
                 logger.info("no race")
                 if database.hget(f"session.data:{ctx.author.id}", "strict"):
@@ -71,7 +73,7 @@ class Check(commands.Cog):
                     correct = arg in correct_list
                 else:
                     logger.info("spelling leniency")
-                    correct = spellcheck_list(arg, correct_list)
+                    correct = spellcheck_list(arg, correct_list, master_id_list)
 
             if correct:
                 logger.info("correct")
